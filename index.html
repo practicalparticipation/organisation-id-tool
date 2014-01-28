@@ -81,6 +81,8 @@
                   <li>A tool to turn IATI IDs back into their component parts</li>
                   <li>Guidance on declaring relationships between different organisational IDs</li>
               </ul>
+              
+
           </p>
 
         </div>
@@ -197,7 +199,7 @@
         
         //Set up editor handler
         $("#idSuffix").blur(function() {
-            suffix = $.trim($(this).val()).replace(/ /g,'_').replace('/','_').replace('-','_').replace(/[_]{2,}/g,'_')
+            suffix = $.trim($(this).val()).replace(/ /g,'_').replace('/\//g','_').replace('/\-/g','_').replace(/[_]{2,}/g,'_')
             $(this).val(suffix);
             fullid = $("#idPrefix").val() + "-"+suffix;
             newClippy(fullid);
