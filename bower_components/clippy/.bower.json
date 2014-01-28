@@ -1,0 +1,14 @@
+{
+  "name": "clippy",
+  "homepage": "https://github.com/mojombo/clippy",
+  "_release": "7329b72360",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "7329b72360100b9484bc6cc9f097ea35f08421ad"
+  },
+  "_source": "git://github.com/mojombo/clippy.git",
+  "_target": "*",
+  "_originalSource": "clippy",
+  "_direct": true
+}

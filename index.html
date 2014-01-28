@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Get your Organisational ID</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="#top">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#plans">Plans</a></li>
+        </ul>
+        <h3 class="text-muted">Organisation ID-a-tron</h3>
+      </div>
+      <a name="top"/>
+      <div class="jumbotron">
+       <div class="countrySelect">
+           Select the country where this organisation is registered:<br/> <select id="countrySelectList"></select>   
+       </div>
+       
+       <div class="agencySelect" style="display:none;">
+          Select the agency it is registered with: <select id="agencySelectList"></select>   
+       </div>
+       
+       <div class="idBuilder" style="display:none;">
+          <div class="idDetails">Look up the organisations existing identifier from <span id="idSource">the selected registration agency</span> and enter it below.</div>
+          <input id="idPrefix" size="11" readonly/>-<input id="idSuffix" size="20" placeholder="Enter ID"/>
+          <span id="clippy"></span>
+       </div>
+       
+       <div id="statistics">
+       </div>
+       
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-12">
+          <a name="about"/>
+          <h4>About</h4>
+          <p>This is an unofficial proof-of-concept service to help publishers of data to the <a href="http://www.iatistandard.org">International Aid Transparency Initiative</a>, and related standards, to identify the Organisation Identifier they should use, based on the draft <a href="http://iatistandard.org/getting-started/organisation-data/organisation-identifiers/">Organisational Identifier Conventions</a>. </p>
+          <p>
+              The idea of the IATI Organisation Identifier Conventions is to provide a best-efforts approach to linking up different data sources that talk about the same organisation. The convention suggests defining 'namespace' prefixes for all the agencies which commonly register organisations (companies, charities, government departments), and then re-using the existing identifiers these organisations have been assigned. By suggesting an order of priority for different namespaces, and encouraging anyone who knows of relationships between two identifiers (e.g. they are the same organisation; or one is a sub-unit of another) to publish this too, users of the data have an improved chance of finding out where heterogenous data sources are referring to transactions and interactions involving the same organisations. 
+          </p>
+          <p>
+              In practice, the IATI Organisation Identifier Conventions are only partially applied. A <a href="https://docs.google.com/spreadsheet/ccc?key=0AnWngmdQt3stdFppMWdkcXJqVTRWTk9menR1N0FXNGc#gid=0">partial list of prefixes is maintained here</a>. This service simplifies the process of identifying appropriate registration agencies and generating an ID from that list. 
+          </p>
+          <p>
+              Some of the things this service <i>could</i> be developed to do are outlined below.
+          <a name="plans"/>
+          <h4>Plans</h4>
+          <p>Future features could include:
+              <ul>
+                  <li>A form for suggesting new prefixes</li>
+                  <li>Validation tools to check IDs - where a resolution service is available and documented in the prefix source file</li>
+                  <li>A tool to turn IATI IDs back into their component parts</li>
+                  <li>Guidance on declaring relationships between different organisational IDs</li>
+              </ul>
+          </p>
+
+        </div>
+
+      
+      </div>
+
+      <div class="footer">
+        <p>Created by <a href="http://www.twitter.com/timdavies">Tim Davies</a> at <a href="http://www.open-dev-ouvert.ca/">Developers for Development</a>, Montreal, January 2014 as a demonstrator.</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/jquery-sheetrock/src/jquery.sheetrock.js"></script>
+    <script><!--
+        // Define spreadsheet URL.
+        var mySpreadsheet = 'https://docs.google.com/spreadsheet/ccc?key=0AnWngmdQt3stdFppMWdkcXJqVTRWTk9menR1N0FXNGc#gid=0';
+
+        function countryHandler(data) {
+            $.each(data.table.rows,function() {
+                $("#countrySelectList").append("<option value='"+ $(this)[0].c[0].v +"'>"+$(this)[0].c[0].v+"</option>")
+            
+            });
+        }
+        
+        function agencyHandler(data) {
+            $(".agencySelect").show();
+            $("#agencySelectList").empty();
+             $("#agencySelectList").append("<option value='SELECT'>---Select---</option>");
+            $.each(data.table.rows,function() {
+                $("#agencySelectList").append("<option value='"+ $(this)[0].c[0].v +"'>"+$(this)[0].c[1].v+"</option>")
+            });
+            $("#agencySelectList").append("<option value='__NEW'>--Agency not listed: suggest new--</option>");
+        }
+        
+        function agencyDetailHandler(data) {
+                  $.each(data.table.rows,function() {
+                     $("#idSource").empty()
+                     $("#idSource").append("<a href='"+$(this)[0].c[0].v+"' target='_blank'>"+$(this)[0].c[1].v+"</a>");
+                  });
+        }
+        
+        function newClippy(text) {
+            $('#clippy').remove();
+            var clippy = $('<object id="clippy" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'+
+                            'width="110"'+
+                            'height="14"'+
+                            'id="clippy" >'+
+                       '<param name="movie" value="bower_components/clippy/build/clippy.swf"/>'+
+                       '<param name="allowScriptAccess" value="always" />'+
+                       '<param name="quality" value="high" />'+
+                       '<param name="scale" value="noscale" />'+
+                       '<param NAME="FlashVars" value="text='+text+'">'+
+                       '<param name="bgcolor" value="#eeeeee">'+
+                       '<embed src="bower_components/clippy/build/clippy.swf"'+
+                              'width="110"'+
+                              'height="14"'+
+                              'name="clippy"'+
+                              'quality="high"'+
+                              'allowScriptAccess="always"'+
+                              'type="application/x-shockwave-flash"'+
+                              'pluginspage="http://www.macromedia.com/go/getflashplayer"'+
+                              'FlashVars="text='+text+'"'+
+                              'bgcolor="#eeeeee"'+
+                      '/>'+
+                      '</object>');
+            $("#idSuffix").after(clippy);
+        }
+        
+        
+        //Initial country list load
+        $('#countrySelect').sheetrock({
+          url: mySpreadsheet,
+          columns: {A: 'Code', B: 'Country', C: 'Agency', D: 'Website', E: 'Public', F: 'IATI_Rules', G: 'Added'},
+          sql: "select %Country%, COUNT(%Code%) WHERE not %Country% = 'Country' GROUP BY %Country% ORDER BY %Country%",
+          headersOff:true,
+          debug: true,
+          dataHandler: countryHandler
+        });
+        
+        //Set up handler for country selection 
+        $("#countrySelectList").change(function() {
+            $(".idBuilder").hide();
+            country = $(this).val();
+            $('#agencySelect').sheetrock({
+              url: mySpreadsheet,
+              columns: {A: 'Code', B: 'Country', C: 'Agency', D: 'Website', E: 'Public', F: 'IATI_Rules', G: 'Added'},
+              sql: "select %Code%, %Agency% WHERE %Country% = '"+country+"'",
+              headersOff:true,
+              debug: true,
+              dataHandler: agencyHandler
+            });  
+        });
+        
+        //Set up hander for ID selection
+        $("#agencySelectList").change(function() {
+           $(".idBuilder").show();
+           prefix = $(this).val();
+           $("#idPrefix").val(prefix); 
+           $('#idSource').sheetrock({
+              url: mySpreadsheet,
+              columns: {A: 'Code', B: 'Country', C: 'Agency', D: 'Website', E: 'Public', F: 'IATI_Rules', G: 'Added'},
+              sql: "select %Website%, %Agency% WHERE %Code% = '"+prefix+"'",
+              headersOff:true,
+              debug: true,
+              dataHandler: agencyDetailHandler
+           });
+        });
+        
+        //Set up editor handler
+        $("#idSuffix").blur(function() {
+            suffix = $.trim($(this).val()).replace(/ /g,'_').replace('/','_').replace('-','_').replace(/[_]{2,}/g,'_')
+            $(this).val(suffix);
+            fullid = $("#idPrefix").val() + "-"+suffix;
+            newClippy(fullid);
+
+        });
+            
+        
+        
+    --></script>
+  </body>
+</html>
