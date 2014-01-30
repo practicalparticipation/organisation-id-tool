@@ -52,6 +52,11 @@
           <div class="idDetails">Look up the organisations existing identifier from <span id="idSource">the selected registration agency</span> and enter it below.</div>
           <input id="idPrefix" size="11" readonly/>-<input id="idSuffix" size="20" placeholder="Enter ID"/>
           <span id="clippy"></span>
+          
+          <div id="opencirce">
+              
+          </div>
+          
        </div>
        
        <div id="statistics">
@@ -203,6 +208,8 @@
             $(this).val(suffix);
             fullid = $("#idPrefix").val() + "-"+suffix;
             newClippy(fullid);
+            $("#opencirce").empty();
+            $("#opencirce").append("<a href='http://opencirce.org/org/code/" + fullid + "'>Lookup on Open Circe</a>");
 
         });
             
